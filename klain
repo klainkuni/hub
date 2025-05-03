@@ -1,0 +1,173 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "Klain Hub",
+    LoadingTitle = "Klain GUI",
+    LoadingSubtitle = "by Klainkuni",
+    Theme = "Bloom",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "KlainHubSave"
+    }
+})
+
+-- Tabs
+local TabPlayer = Window:CreateTab("Player", 4483362458)
+local TabGarden = Window:CreateTab("Grow a Garden", 4483362458)
+local TabUtilities = Window:CreateTab("Utilities", 4483362458)
+
+-- Speed
+TabPlayer:CreateSlider({
+    Name = "WalkSpeed",
+    Range = {16, 1500},
+    Increment = 1,
+    CurrentValue = 16,
+    Callback = function(value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+    end,
+})
+
+-- Jump Power
+TabPlayer:CreateSlider({
+    Name = "JumpPower",
+    Range = {50, 1500},
+    Increment = 1,
+    CurrentValue = 50,
+    Callback = function(value)
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = value
+    end,
+})
+
+-- Click TP (Ctrl + ЛКМ)
+local clickTPEnabled = false
+TabPlayer:CreateToggle({
+    Name = "Click TP (Ctrl + ЛКМ)",
+    CurrentValue = false,
+    Callback = function(state)
+        clickTPEnabled = state
+    end,
+})
+
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 and clickTPEnabled and game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then
+        local mouse = game.Players.LocalPlayer:GetMouse()
+        if mouse then
+            local pos = mouse.Hit + Vector3.new(0, 2.5, 0)
+            game.Players.LocalPlayer.Character:MoveTo(pos.Position)
+        end
+    end
+end)
+
+-- Teleport to Player
+TabPlayer:CreateInput({
+    Name = "Teleport To Player",
+    PlaceholderText = "Введите ник",
+    RemoveTextAfterFocusLost = true,
+    Callback = function(nickname)
+        local target = game.Players:FindFirstChild(nickname)
+        local char = game.Players.LocalPlayer.Character
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            char:MoveTo(target.Character.HumanoidRootPart.Position + Vector3.new(0, 5, 0))
+        else
+            Rayfield:Notify({
+                Title = "Ошибка",
+                Content = "Игрок не найден или не прогружен.",
+                Duration = 4
+            })
+        end
+    end,
+})
+
+-- Fly (v3 стиль)
+local flyv3enabled = false
+local UIS = game:GetService("UserInputService")
+
+TabPlayer:CreateToggle({
+    Name = "Fly (v3 стиль)",
+    CurrentValue = false,
+    Callback = function(state)
+        flyv3enabled = state
+        local plr = game.Players.LocalPlayer
+        local char = plr.Character or plr.CharacterAdded:Wait()
+        local hrp = char:WaitForChild("HumanoidRootPart")
+
+        if state then
+            local bv = Instance.new("BodyVelocity", hrp)
+            bv.Name = "FlyVelocity"
+            bv.MaxForce = Vector3.new(1e9, 1e9, 1e9)
+            bv.Velocity = Vector3.zero
+
+            local speed = 100
+            local moveDir = Vector3.zero
+
+            local function update()
+                if not flyv3enabled then return end
+                moveDir = Vector3.zero
+                if UIS:IsKeyDown(Enum.KeyCode.W) then moveDir += workspace.CurrentCamera.CFrame.LookVector end
+                if UIS:IsKeyDown(Enum.KeyCode.S) then moveDir -= workspace.CurrentCamera.CFrame.LookVector end
+                if UIS:IsKeyDown(Enum.KeyCode.A) then moveDir -= workspace.CurrentCamera.CFrame.RightVector end
+                if UIS:IsKeyDown(Enum.KeyCode.D) then moveDir += workspace.CurrentCamera.CFrame.RightVector end
+                if UIS:IsKeyDown(Enum.KeyCode.Space) then moveDir += Vector3.new(0, 1, 0) end
+                if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then moveDir -= Vector3.new(0, 1, 0) end
+                bv.Velocity = moveDir.Magnitude > 0 and moveDir.Unit * speed or Vector3.zero
+            end
+
+            local flyLoop = game:GetService("RunService").RenderStepped:Connect(function()
+                if flyv3enabled then
+                    pcall(update)
+                else
+                    flyLoop:Disconnect()
+                    if bv then bv:Destroy() end
+                end
+            end)
+        else
+            local old = hrp:FindFirstChild("FlyVelocity")
+            if old then old:Destroy() end
+        end
+    end,
+})
+
+-- Noclip
+local noclip = false
+TabPlayer:CreateToggle({
+    Name = "Noclip",
+    CurrentValue = false,
+    Callback = function(state)
+        noclip = state
+    end,
+})
+
+game:GetService("RunService").Stepped:Connect(function()
+    if noclip then
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+            if v:IsA("BasePart") and v.CanCollide then
+                v.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- Infinite Yield
+TabUtilities:CreateButton({
+    Name = "Infinite Yield",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+    end,
+})
+
+-- Unload GUI
+TabUtilities:CreateButton({
+    Name = "Unload",
+    Callback = function()
+        Rayfield:Destroy()
+    end,
+})
+
+-- Grow a Garden (Thao Hub)
+TabGarden:CreateButton({
+    Name = "Thao Hub",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/game/refs/heads/main/TbaoHubGrowGarden"))()
+    end,
+})
