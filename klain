@@ -158,4 +158,4 @@ MM2Tab:CreateButton({
 local Credits = Window:CreateTab("Credits", 4483362458)
 Credits:CreateLabel("Created by klainkuni")
 
---ORIGINAL SCRIPT MADE BY https://discord.gg/mWaaCNMy
+
