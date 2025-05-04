@@ -2,159 +2,192 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "klain hub",
-   LoadingTitle = "Загрузка...",
-   LoadingSubtitle = "by klainkuni",
-   ConfigurationSaving = {
-      Enabled = true,
-      FolderName = nil,
-      FileName = "klainhub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = false,
-   Theme = "Bloom"
+    Name = "KlainHub",
+    LoadingTitle = "KlainHub Loading...",
+    LoadingSubtitle = "by klainkuni",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "KlainHubConfig"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "",
+        RememberJoins = true
+    },
+    KeySystem = false,
+    KeySettings = {
+        Title = "KlainHub",
+        Subtitle = "Key System",
+        Note = "Get key from Discord",
+        FileName = "KlainHubKey",
+        SaveKey = true,
+        GrabKeyFromSite = false,
+        Key = {"klainhub"}
+    },
+    Theme = "Bloom"
 })
-
-
-local MainTab = Window:CreateTab("Main", 4483362458)
-
-MainTab:CreateButton({
-   Name = "Infinite Yield",
-   Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-   end
-})
-
-MainTab:CreateButton({
-   Name = "Unload",
-   Callback = function()
-      Rayfield:Destroy()
-   end
-})
-
 
 local PlayerTab = Window:CreateTab("Player", 4483362458)
-
-PlayerTab:CreateSlider({
-   Name = "WalkSpeed",
-   Range = {16, 1500},
-   Increment = 1,
-   CurrentValue = 16,
-   Callback = function(Value)
-      game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
-   end,
-})
-
-PlayerTab:CreateSlider({
-   Name = "JumpPower",
-   Range = {50, 1500},
-   Increment = 1,
-   CurrentValue = 50,
-   Callback = function(Value)
-      game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
-   end,
-})
-
-local ClickTpEnabled = false
-PlayerTab:CreateToggle({
-   Name = "Click TP (Ctrl + ЛКМ)",
-   CurrentValue = false,
-   Callback = function(Value)
-      ClickTpEnabled = Value
-   end,
-})
-
-game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-   if ClickTpEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 and game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then
-      local mouse = game.Players.LocalPlayer:GetMouse()
-      if mouse then
-         local char = game.Players.LocalPlayer.Character
-         if char and char:FindFirstChild("HumanoidRootPart") then
-            char:MoveTo(mouse.Hit.p + Vector3.new(0, 2, 0))
-         end
-      end
-   end
-end)
-
-
-local NoclipEnabled = false
-game:GetService("RunService").Stepped:Connect(function()
-   if NoclipEnabled then
-      for _, part in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-         if part:IsA("BasePart") then
-            part.CanCollide = false
-         end
-      end
-   end
-end)
-
-PlayerTab:CreateToggle({
-   Name = "Noclip",
-   CurrentValue = false,
-   Callback = function(Value)
-      NoclipEnabled = Value
-   end,
-})
-
-
-PlayerTab:CreateButton({
-   Name = "Fly GUI V3",
-   Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
-   end,
-})
-
-
-PlayerTab:CreateInput({
-   Name = "Телепорт к игроку",
-   PlaceholderText = "Введи ник игрока",
-   RemoveTextAfterFocusLost = false,
-   Callback = function(playerName)
-      local target = game.Players:FindFirstChild(playerName)
-      local localPlayer = game.Players.LocalPlayer
-      if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-         localPlayer.Character:MoveTo(target.Character.HumanoidRootPart.Position + Vector3.new(0, 3, 0))
-      end
-   end,
-})
-
-
-local GardenTab = Window:CreateTab("Grow a Garden", 4483362458)
-GardenTab:CreateButton({
-   Name = "Thao Hub",
-   Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/game/refs/heads/main/TbaoHubGrowGarden"))()
-   end
-})
-
-
+local UniversalTab = Window:CreateTab("Universal", 4483362458)
+local HubsTab = Window:CreateTab("Hubs", 4483362458)
+local GrowTab = Window:CreateTab("Grow a Garden", 4483362458)
 local MM2Tab = Window:CreateTab("MM2", 4483362458)
+local DeadRailsTab = Window:CreateTab("Dead Rails", 4483362458)
+local CreditsTab = Window:CreateTab("Credits", 4483362458)
 
-MM2Tab:CreateButton({
-   Name = "SnapSanixHUB",
-   Callback = function()
-      loadstring(game:HttpGet('https://raw.githubusercontent.com/Roman34296589/SnapSanixHUB/refs/heads/main/SnapSanixHUB.lua'))()
-   end,
+-- WalkSpeed
+PlayerTab:CreateSlider({
+    Name = "WalkSpeed",
+    Range = {16, 1500},
+    Increment = 1,
+    CurrentValue = 16,
+    Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+    end,
 })
 
-MM2Tab:CreateButton({
-   Name = "Xhub",
-   Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Au0yX/Community/main/XhubMM2"))()
-   end,
+-- JumpPower
+PlayerTab:CreateSlider({
+    Name = "JumpPower",
+    Range = {50, 1500},
+    Increment = 1,
+    CurrentValue = 50,
+    Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+    end,
 })
 
-MM2Tab:CreateButton({
-   Name = "hook",
-   Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/kiciahook/kiciahook/refs/heads/main/loader.lua"))()
-   end,
+-- Click TP toggle
+getgenv().ClickTPEnabled = false
+PlayerTab:CreateToggle({
+    Name = "Click TP (Ctrl + LMB)",
+    CurrentValue = false,
+    Callback = function(Value)
+        getgenv().ClickTPEnabled = Value
+    end,
 })
 
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 and getgenv().ClickTPEnabled and game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then
+        local pos = game:GetService("Players").LocalPlayer:GetMouse().Hit + Vector3.new(0,2.5,0)
+        game:GetService("Players").LocalPlayer.Character:MoveTo(pos.Position)
+    end
+end)
 
-local Credits = Window:CreateTab("Credits", 4483362458)
-Credits:CreateLabel("Created by klainkuni")
+-- Noclip
+getgenv().noclip = false
+PlayerTab:CreateToggle({
+    Name = "Noclip",
+    CurrentValue = false,
+    Callback = function(Value)
+        getgenv().noclip = Value
+        game:GetService("RunService").Stepped:Connect(function()
+            if getgenv().noclip then
+                for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                    if v:IsA("BasePart") and v.CanCollide then
+                        v.CanCollide = false
+                    end
+                end
+            end
+        end)
+    end,
+})
+
+-- Fly (как в Fly GUI V3)
+PlayerTab:CreateButton({
+    Name = "Fly GUI V3",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+    end,
+})
+
+-- Teleport to player (с вводом ника)
+PlayerTab:CreateInput({
+    Name = "Teleport to Player",
+    PlaceholderText = "Enter player name",
+    RemoveTextAfterFocusLost = true,
+    Callback = function(input)
+        local target = game.Players:FindFirstChild(input)
+        if target and target.Character then
+            game.Players.LocalPlayer.Character:MoveTo(target.Character.HumanoidRootPart.Position + Vector3.new(2,0,0))
+        end
+    end,
+})
+
+-- Infinity Yield
+UniversalTab:CreateButton({
+    Name = "Infinite Yield",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+    end,
+})
+
+-- Aimbot & ESP
+UniversalTab:CreateButton({
+    Name = "Aimbot & ESP",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ttwizz/Open-Aimbot/master/source.lua", true))()
+    end,
+})
+
+-- Visual Hub
+HubsTab:CreateButton({
+    Name = "Visual Hub",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Leviiistaken/sigma/refs/heads/main/visual"))()
+    end,
+})
+
+-- Grow a Garden - Thao Hub
+GrowTab:CreateButton({
+    Name = "Thao Hub",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/game/refs/heads/main/TbaoHubGrowGarden"))()
+    end,
+})
+
+-- MM2
+MM2Tab:CreateButton({
+    Name = "SnapSanixHUB",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/Roman34296589/SnapSanixHUB/refs/heads/main/SnapSanixHUB.lua'))()
+    end,
+})
+MM2Tab:CreateButton({
+    Name = "Xhub",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Au0yX/Community/main/XhubMM2"))()
+    end,
+})
+MM2Tab:CreateButton({
+    Name = "Hook",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/kiciahook/kiciahook/refs/heads/main/loader.lua"))()
+    end,
+})
+
+-- Dead Rails
+DeadRailsTab:CreateButton({
+    Name = "LastExploiters",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/8WappG0r"))()
+    end,
+})
+DeadRailsTab:CreateButton({
+    Name = "Zephyr DeadRails",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Unknownlodfc/Zephyr/refs/heads/main/DeadRails/Main"))()
+    end,
+})
+
+-- Unload
+UniversalTab:CreateButton({
+    Name = "Unload GUI",
+    Callback = function()
+        Rayfield:Destroy()
+    end,
+})
+
+-- Credits tab
+CreditsTab:CreateLabel("Script made by klainkuni")
